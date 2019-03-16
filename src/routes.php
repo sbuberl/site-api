@@ -16,17 +16,16 @@ $app->get('/[{name}]', function (Request $request, Response $response, array $ar
 $app->get('/posts', function (Request $request, Response $response) {
     $this->logger->addInfo("Post list");
     $result = $this->db->query("SELECT * FROM posts ORDER BY id");
-	$posts = [];
+    $posts = [];
     while($row = $result->fetchAssoc($result))
     {
         $posts[] = new Post($row['id'], $row['title'], $row['createdTime'], $row['content']);
-    }
-    $response = $this->view->render($response, "tickets.phtml", ["tickets" => $tickets, "router" => $this->router]);
+    );
     return $response->withJson($posts, 201);
 });
 
 $app->get('/posts/:id', function ($id) use($app){
-	$this->logger->addInfo("Get post");
+    $this->logger->addInfo("Get post");
     $select = $this->db->prepare("SELECT * FROM posts WHERE id=?");
     $select->bind_param("i", id);
     $select->execute();
@@ -37,7 +36,7 @@ $app->get('/posts/:id', function ($id) use($app){
 });
 
 $app->post('/posts', function ($id) use($app){
-	$this->logger->addInfo("Insert post");
+    $this->logger->addInfo("Insert post");
     $postVars = $request->getParsedBody();
     $title = $postVars['title'];
     $createdTime = date('c', time());
@@ -51,7 +50,7 @@ $app->post('/posts', function ($id) use($app){
 });
 
 $app->put('/posts/:id', function ($id) use($app){
-	$this->logger->addInfo("Update post");
+    $this->logger->addInfo("Update post");
     $postVars = $request->getParsedBody();
     $title = $postVars['title'];
     $content = $postVars['content'];
@@ -69,7 +68,7 @@ $app->put('/posts/:id', function ($id) use($app){
 });
 
 $app->delete('/posts/:id', function ($id) use($app){
-	$this->logger->addInfo("Delete post");
+    $this->logger->addInfo("Delete post");
     $delete = $fsql->prepare("DELETE FROM posts WHERE id=?;");
     $delete->bind_param("i", $id);
     $delete->execute();
