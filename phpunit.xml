@@ -9,6 +9,7 @@
         <whitelist>
             <directory>./</directory>
             <exclude>
+                <directory>./public</directory>
                 <directory>./tests</directory>
             </exclude>
         </whitelist>
