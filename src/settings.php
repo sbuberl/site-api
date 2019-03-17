@@ -15,10 +15,10 @@ return [
             'path' => isset($_ENV['docker']) ? 'php://stdout' : __DIR__ . '/../logs/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
-        
-        // database connection details         
-        "db" => [            
-             "path" => __DIR__ . '/../../../siteDb',             
+
+        // database connection details
+        "db" => [
+             "path" => __DIR__ . '/../../siteDb',
              "dbname" => "siteDb",
          ],
     ],
