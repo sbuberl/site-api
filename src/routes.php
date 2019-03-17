@@ -1,17 +1,8 @@
 <?php
-
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 // Routes
-
-$app->get('/[{name}]', function (Request $request, Response $response, array $args) {
-    // Sample log message
-    $this->logger->info("Slim-Skeleton '/' route");
-
-    // Render index view
-    return $this->renderer->render($response, 'index.phtml', $args);
-});
 
 $app->get('/posts', function (Request $request, Response $response) {
     $this->logger->addInfo("Post list");
@@ -20,8 +11,8 @@ $app->get('/posts', function (Request $request, Response $response) {
     while($row = $result->fetchAssoc($result))
     {
         $posts[] = new Post($row['id'], $row['title'], $row['createdTime'], $row['content']);
-    );
-    return $response->withJson($posts, 201);
+    }
+    return $response->withJson($posts, 200);
 });
 
 $app->get('/posts/:id', function ($id) use($app){
