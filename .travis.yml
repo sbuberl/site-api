@@ -7,6 +7,7 @@ php:
   - 7.3
 
 install:
+    - composer update
     - composer install -o
 
 script: vendor/bin/phpunit --configuration phpunit.xml --coverage-clover=coverage.xml
