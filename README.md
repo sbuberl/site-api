@@ -1,4 +1,4 @@
-![alt text](https://travis-ci.org/sbuberl/site-api.svg?branch=master "Travis Build Result")
+[![Build Status](https://travis-ci.org/sbuberl/site-api.svg)](https://travis-ci.org/sbuberl/site-api)
 
 # site-api
 
