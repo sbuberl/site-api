@@ -2,67 +2,64 @@
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+use Models\Post;
+
 // Routes
 
 $app->get('/posts', function (Request $request, Response $response) {
     $this->logger->addInfo("Post list");
-    $result = $this->db->query("SELECT * FROM posts ORDER BY id");
-    $posts = [];
-    while($row = $result->fetchAssoc($result))
-    {
-        $posts[] = new Post($row['id'], $row['title'], $row['createdTime'], $row['content']);
-    }
-    return $response->withJson($posts, 200);
+    $posts = $this->postMapper->fetchAll();
+    return $response->withJson($posts);
 });
 
-$app->get('/posts/:id', function ($id) use($app){
+$app->get('/posts/:id', function (Request $request, Response $response, $args) {
     $this->logger->addInfo("Get post");
-    $select = $this->db->prepare("SELECT * FROM posts WHERE id=?");
-    $select->bind_param("i", id);
-    $select->execute();
-    $result = $select->get_result();
-    $row = $result->fetchAssoc($result);
-    $post = new Post($row['id'], $row['title'], $row['createdTime'], $row['content']);
-    return $response->withJson($post);
+    $id = (int) $args['id'];
+    $post = $this->postMapper->loadById($id);
+    if($post !== false) {
+        return $response->withJson($post);
+    } else {
+        return $response->withJson("Could not find post", 404);
+    }
 });
 
-$app->post('/posts', function ($id) use($app){
+$app->post('/posts', function (Request $request, Response $response) {
     $this->logger->addInfo("Insert post");
     $postVars = $request->getParsedBody();
     $title = $postVars['title'];
     $createdTime = date('c', time());
     $content = $postVars['content'];
-    $insert = $fsql->prepare("INSERT INTO posts(title,createdTime,content) values(?, ?, ?);");
-    $insert->bind_param("sss", $title, $createdTime, $content);
-    $insert->execute();
+    $post = new Post(null, $title, $createdTime, $content);
+    $this->postMapper->insert($post);
     $postId = $this->db->insert_id();
-    $post = new Post($postId, $title, $createdTime, $content);
-    return $response->withJson($post);
+    $post->setId($postId);
+    return $response->withJson($post, 201);
 });
 
-$app->put('/posts/:id', function ($id) use($app){
+$app->put('/posts/:id', function (Request $request, Response $response, $args) {
     $this->logger->addInfo("Update post");
+    $id = (int) $args['id'];
     $postVars = $request->getParsedBody();
-    $title = $postVars['title'];
-    $content = $postVars['content'];
-    $update = $fsql->prepare("UPDATE post SET title = ?, content = ? WHERE id=?;");
-    $update->bind_param("ssi", $title, $content, $id);
-    $update->execute();
-
-    $select = $this->db->prepare("SELECT createdTime FROM posts WHERE id=?");
-    $select->bind_param("i", id);
-    $select->execute();
-    $result = $select->get_result();
-    $row = $result->fetchAssoc($result);
-    $post = new Post($id, $title, $row['createdTime'], $content);
-    return $response->withJson($post);
+    $post = $this->postMapper->loadById($id);
+    if($post !== false) {
+        $post->update($postVars);
+        $this->postMapper->update($post);
+        return $response->withJson($post);
+    }
+    else {
+        return $response->withJson("Could not find post", 404);
+    }
 });
 
-$app->delete('/posts/:id', function ($id) use($app){
+$app->delete('/posts/:id', function (Request $request, Response $response, $args) {
     $this->logger->addInfo("Delete post");
-    $delete = $fsql->prepare("DELETE FROM posts WHERE id=?;");
-    $delete->bind_param("i", $id);
-    $delete->execute();
-
-    return $response->withStatus(204);
+    $id = (int) $args['id'];
+    $post = $this->postMapper->loadById($id);
+    if($post !== false) {
+        $post = $this->postMapper->delete($id);
+        return $response->withStatus(204);
+    }
+    else {
+        return $response->withJson("Could not find post", 404);
+    }
 });

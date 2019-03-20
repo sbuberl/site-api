@@ -18,11 +18,6 @@ $container['logger'] = function ($c) {
     return $logger;
 };
 
-function convertToLocal($utcDate) {
-    $time = strtotime($utcDate);
-    return date("Y-m-d H:i:s", $time);
-}
-
 $container['db'] = function ($c) {
     $db = $c->get('settings')['db'];
     $fsql = new FSQL\Environment();
@@ -38,21 +33,28 @@ $container['db'] = function ($c) {
     $insert = $fsql->prepare("INSERT INTO posts(title, createdTime, content) VALUES (?, ?, ?);");
 
     $title = "Welcome to my blog";
-    $createdTime = convertToLocal("2018-11-26T02:52:40+00:00");
+    $time = strtotime("2018-11-26T02:52:40+00:00");
+    $createdTime = date("Y-m-d H:i:s", $time);
     $content = "Thanks for joining me on my new blog.\nI primarily use it for site news and updates (such as new release or new content added).\nI’m playing around with moving the fSQL docs back to the new site layout now that I’ve gotten rid of Jekyll.";
 
     $insert->bind_param("sss", $title, $createdTime, $content);
     $insert->execute();
 
     $title = "Old Design Retired";
-    $createdTime = convertToLocal("2019-03-08T21:01:46+00:00");
+    $time = strtotime("2019-03-08T21:01:46+00:00");
+    $createdTime = date("Y-m-d H:i:s", $time);
     $content = "I just switched from my sbuberl.com’s old Jekyll-based web design to the current design I was playing around with for a little while in a separate GitHub repo.\nPlus I can customize the syntax highlighting to any style I wish now.";
     $insert->execute();
 
     $title = "Adding Photo Albums";
-    $createdTime = convertToLocal("2019-03-10T20:53:07+00:00");
+    $time = strtotime("2019-03-10T20:53:07+00:00");
+    $createdTime = date("Y-m-d H:i:s", $time);
     $content = "I started added some old photo albums of previous trips and activities to the site.\nI will be posting more soon.";
     $insert->execute();
 
     return $fsql;
+};
+
+$container['postMapper'] = function ($c) {
+    return new Models\PostMapper($c->get('db'));
 };
