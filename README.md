@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/sbuberl/site-api.svg)](https://travis-ci.org/sbuberl/site-api)
+[![codecov](https://codecov.io/gh/sbuberl/site-api/branch/master/graph/badge.svg)](https://codecov.io/gh/sbuberl/site-api)
 
 # site-api
 
