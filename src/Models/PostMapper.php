@@ -67,6 +67,7 @@ class PostMapper
      */
     public function update(Post $post)
     {
+        $id = $post->getId();
         $title = $post->getTitle();
         $content = $post->getContent();
         $update = $this->db->prepare("UPDATE post SET title = ?, content = ? WHERE id=?;");
