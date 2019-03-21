@@ -12,7 +12,7 @@ $app->get('/posts', function (Request $request, Response $response) {
     return $response->withJson($posts);
 });
 
-$app->get('/posts/:id', function (Request $request, Response $response, $args) {
+$app->get('/posts/{id}', function (Request $request, Response $response, $args) {
     $this->logger->addInfo("Get post");
     $id = (int) $args['id'];
     $post = $this->postMapper->loadById($id);
@@ -27,7 +27,7 @@ $app->post('/posts', function (Request $request, Response $response) {
     $this->logger->addInfo("Insert post");
     $postVars = $request->getParsedBody();
     $title = $postVars['title'];
-    $createdTime = date('c', time());
+    $createdTime = (new \DateTime())->format('Y-m-d H:i:s');
     $content = $postVars['content'];
     $post = new Post(null, $title, $createdTime, $content);
     $this->postMapper->insert($post);
@@ -36,7 +36,7 @@ $app->post('/posts', function (Request $request, Response $response) {
     return $response->withJson($post, 201);
 });
 
-$app->put('/posts/:id', function (Request $request, Response $response, $args) {
+$app->put('/posts/{id}', function (Request $request, Response $response, $args) {
     $this->logger->addInfo("Update post");
     $id = (int) $args['id'];
     $postVars = $request->getParsedBody();
@@ -51,7 +51,7 @@ $app->put('/posts/:id', function (Request $request, Response $response, $args) {
     }
 });
 
-$app->delete('/posts/:id', function (Request $request, Response $response, $args) {
+$app->delete('/posts/{id}', function (Request $request, Response $response, $args) {
     $this->logger->addInfo("Delete post");
     $id = (int) $args['id'];
     $post = $this->postMapper->loadById($id);

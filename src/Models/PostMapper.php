@@ -34,14 +34,11 @@ class PostMapper
      */
     public function loadById($id)
     {
-        var_dump($id);
         $select = $this->db->prepare("SELECT * FROM posts WHERE id=?");
         $select->bind_param("i", $id);
         $select->execute();
         $result = $select->get_result();
-        var_dump($result);
         $row = $result->fetchAssoc($result);
-        var_dump($row);
         if ($row) {
             return new Post($row['id'], $row['title'], $row['createdTime'], $row['content']);
         }
@@ -54,8 +51,11 @@ class PostMapper
      */
     public function insert(Post $post)
     {
-        $insert = $fsql->prepare("INSERT INTO posts(title,createdTime,content) values(?, ?, ?);");
-        $insert->bind_param("sss", $post->getTitle(), $post->getCreatedTime(), $post->getContent());
+        $title = $post->getTitle();
+        $createdTime = $post->getCreatedTime();
+        $content = $post->getContent();
+        $insert = $this->db->prepare("INSERT INTO posts(title,createdTime,content) values(?, ?, ?);");
+        $insert->bind_param("sss", $title, $createdTime, $content);
         $insert->execute();
         $postId = $this->db->insert_id();
         return new Post($postId, $title, $createdTime, $content);
@@ -67,11 +67,11 @@ class PostMapper
      */
     public function update(Post $post)
     {
-        $update = $fsql->prepare("UPDATE post SET title = ?, content = ? WHERE id=?;");
-        $update->bind_param("ssi", $post->getTitle(), $post->getContent(), $id);
+        $title = $post->getTitle();
+        $content = $post->getContent();
+        $update = $this->db->prepare("UPDATE post SET title = ?, content = ? WHERE id=?;");
+        $update->bind_param("ssi", $title, $content, $id);
         $update->execute();
-        $stmt = $this->db->prepare($query);
-        $result = $stmt->execute($data);
         return $post;
     }
     /**
@@ -82,7 +82,7 @@ class PostMapper
      */
     public function delete($id)
     {
-        $delete = $fsql->prepare("DELETE FROM posts WHERE id=?;");
+        $delete = $this->db->prepare("DELETE FROM posts WHERE id=?;");
         $delete->bind_param("i", $id);
         $delete->execute();
         return (bool)$this->db->affected_rows();
