@@ -25,7 +25,7 @@ $container['db'] = function ($c) {
     $fsql->select_db($db['dbname']);
 
     $fsql->query("CREATE TABLE IF NOT EXISTS posts(id INT AUTO_INCREMENT PRIMARY KEY, title TEXT NOT NULL, createdTime TEXT NOT NULL, content TEXT)");
-    $fsql->query("CREATE TABLE IF NOT EXISTS comments(id INT AUTO_INCREMENT PRIMARY KEY, name TEXT, createdTime TEXT, post_id INT, content TEXT);");
+    $fsql->query("CREATE TABLE IF NOT EXISTS comments(id INT AUTO_INCREMENT PRIMARY KEY, name TEXT, createdTime TEXT, postId INT, content TEXT);");
 
     $fsql->query("TRUNCATE TABLE posts RESTART IDENTITY");
     $fsql->query("TRUNCATE TABLE comments RESTART IDENTITY");
@@ -57,4 +57,8 @@ $container['db'] = function ($c) {
 
 $container['postMapper'] = function ($c) {
     return new Models\PostMapper($c->get('db'));
+};
+
+$container['commentMapper'] = function ($c) {
+    return new Models\CommentMapper($c->get('db'));
 };

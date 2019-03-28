@@ -49,4 +49,9 @@ class Comment implements \JsonSerializable
     {
         return $this->content;
     }
+
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 }
