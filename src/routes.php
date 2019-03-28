@@ -84,7 +84,7 @@ $app->get('/posts/{postId}/comments/{id}', function (Request $request, Response 
 });
 
 $app->post('/posts/{postId}/comments', function (Request $request, Response $response, $args) {
-    t$this->logger->addInfo("Insert comment");
+    $this->logger->addInfo("Insert comment");
     $postVars = $request->getParsedBody();
     $postId = (int) $args['postId'];
     $title = $postVars['title'];
